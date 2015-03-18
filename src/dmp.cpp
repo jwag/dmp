@@ -47,7 +47,7 @@ namespace dmp{
 #define MAX_PLAN_LENGTH 1000
 
 double alpha = -log(0.01); //Ensures 99% phase convergence at t=tau
-double base_width = 1;
+double base_width = 3;
 
 /**
  * @brief Calculate an exp-decaying 1 to 0 phase based on time and the time scaling constant tau
@@ -115,6 +115,7 @@ void learnFromDemo(const DMPTraj &demo,
 		for(int i=0; i<n_pts; i++){
 			double phase = calcPhase(demo.times[i],tau);
 			f_domain[i] = demo.times[i]/tau;  //Scaled time is cleaner than phase for spacing reasons
+			//f_domain[i] = phase;
 			f_targets[i] = ((tau*tau*v_dot_demo[i] + curr_d*tau*v_demo[i]) / curr_k) - (goal-x_demo[i]) + ((goal-x_0)*phase);
 			f_targets[i] /= phase; // Do this instead of having fxn approx scale its output based on phase
 		}
@@ -221,11 +222,13 @@ void generatePlan(const vector<DMPData> &dmp_list,
 				//Compute the phase and the log of the phase to assist with some numerical issues
 				//Then, evaluate the function approximator at the log of the phase
 				double s = calcPhase((t+t_0) + (dt*iter), tau);
+				//double log_s = 1-((t+t_0)+(dt*iter))/tau;
 				double log_s = (t+t_0)/tau;
-				if(log_s >= 1.0){
+				if(log_s >= 1){
 					f_eval = 0;
 				}
 				else{
+					//f_eval = f[i]->evalAt(s) * s;
 					f_eval = f[i]->evalAt(log_s) * s;
 				}
 				

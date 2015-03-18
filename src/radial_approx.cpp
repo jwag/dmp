@@ -55,6 +55,9 @@ RadialApprox::RadialApprox(int num_bases, double base_width, double alpha)
 	weights.resize(n_bases);
 	for(int i=0; i<n_bases; i++){
 		features[i] = 0;
+		//centers[i] = ((double)(i+1))/((double)n_bases); //*
+		//centers[i] = ((double)i)/((double)n_bases);
+	 	//widths[i] = base_width; //*
 		centers[i] = exp((-alpha*i)/n_bases);
 		widths[i] = base_width * (1/exp((-alpha*i)/n_bases));
 	}
@@ -70,8 +73,11 @@ RadialApprox::RadialApprox(const vector<double> &w, double base_width, double al
 		widths = new double[n_bases];
 		for(int i=0; i<n_bases; i++){
 			features[i] = 0;
-			centers[i] = ((double)i)/((double)n_bases);  //exp((-alpha*i)/n_bases);
-			widths[i] = base_width; //base_width * exp((-alpha*i)/n_bases);
+			//centers[i] = ((double)(i+1))/((double)n_bases); //*
+			//centers[i] = ((double)i)/((double)n_bases);
+			//widths[i] = base_width; //*
+			centers[i] = exp((-alpha*i)/n_bases);
+			widths[i] = base_width * (1/exp((-alpha*i)/n_bases));
 		}
 }
 
@@ -111,7 +117,10 @@ void RadialApprox::leastSquaresWeights(double *X, double *Y, int n_pts)
 	}
 
 	//Calculate the least squares weights via projection onto the basis functions
-	MatrixXd w = pseudoinverse(D_mat.transpose() * D_mat) * D_mat.transpose() * Y_mat;
+	//MatrixXd w = pseudoinverse(D_mat.transpose() * D_mat) * D_mat.transpose() * Y_mat;
+	MatrixXd w = pseudoinverse(D_mat) * Y_mat;
+	//MatrixXd mess = D_mat.transpose() * D_mat;
+	//MatrixXd w = mess.inverse() * D_mat.transpose() * Y_mat;
 	for(int i=0; i<n_bases; i++){
 		weights[i] = w(i,0);
 	}
