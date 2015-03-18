@@ -6,13 +6,16 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 endif()
 
 find_package(catkin REQUIRED COMPONENTS
-eigen
 roscpp
 rospy
 message_generation
+cmake_modules
 )
 
+find_package(Eigen REQUIRED)
+
 add_message_files(
+
    FILES
    DMPData.msg
    DMPPoint.msg

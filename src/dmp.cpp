@@ -83,7 +83,7 @@ void learnFromDemo(const DMPTraj &demo,
 	}
 	int dims = demo.points[0].positions.size();
 	double tau = demo.times[n_pts-1];
-
+	
 	double *x_demo = new double[n_pts];
 	double *v_demo = new double[n_pts];
 	double *v_dot_demo = new double[n_pts];
